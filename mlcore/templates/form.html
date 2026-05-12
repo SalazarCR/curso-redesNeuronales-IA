@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ML Input Form</title>
+</head>
+<body>
+
+<h2>Ingresar Datos</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Enviar</button>
+</form>
+
+{% if result %}
+    <h3>Resultado:</h3>
+    <pre>{{ result }}</pre>
+{% endif %}
+
+</body>
+</html>

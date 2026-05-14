@@ -40,47 +40,23 @@ class TitanicPredictor:
             return False
     
     def preprocess_data(self, data):
-        """
-        Preprocesa los datos del formulario para la predicción.
-        
-        El modelo espera 5 features en este orden:
-        [Fare, Pclass, Gender, Age, SibSp]
-        
-        Mapeo de entrada:
-        - fare → Fare (numérico)
-        - passenger_class → Pclass (First=1, Second=2, Third=3)
-        - sex → Gender (male=0, female=1)
-        - age → Age (numérico)
-        - n_siblings_spouses → SibSp (numérico)
-        """
+        """Preprocesa los datos del formulario para la predicción"""
         try:
-            # Convertir clase de pasaje a número
-            class_map = {'First': 1, 'Second': 2, 'Third': 3}
-            pclass = float(class_map.get(data.get('passenger_class', 'Third'), 3))
-            
-            # Convertir género a numérico
-            gender_map = {'male': 0, 'female': 1}
-            gender = float(gender_map.get(data.get('sex', 'male'), 0))
-            
             # Extraer valores numéricos
-            fare = float(data.get('fare', 0))
+            parch = float(data.get('parch', 0))
             age = float(data.get('age', 30))
-            sibsp = float(data.get('n_siblings_spouses', 0))
+            n_siblings_spouses = float(data.get('n_siblings_spouses', 0))
+            fare = float(data.get('fare', 0))
             
-            # El modelo espera: [Fare, Pclass, Gender, Age, SibSp]
-            features = np.array([[fare, pclass, gender, age, sibsp]])
+            # El modelo espera: [fare, parch, age, n_siblings_spouses]
+            features = np.array([[fare, parch, age, n_siblings_spouses]])
             
             return features, True, None
         except Exception as e:
             return None, False, f"Error en preprocesamiento: {str(e)}"
     
     def predict(self, data):
-        """
-        Realiza una predicción basada en los datos del formulario.
-        
-        Returns:
-            dict con resultado y probabilidad
-        """
+        """Realiza una predicción basada en los datos del formulario"""
         if self.model is None:
             return {
                 'success': False,

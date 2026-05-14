@@ -1,0 +1,55 @@
+{% extends 'app/base.html' %}
+
+{% block title %}Explicación del Proyecto{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card p-5">
+            <h3 class="fw-bold mb-4">Arquitectura del Sistema Inteligente</h3>
+            
+            <section class="mb-5">
+                <h5 class="text-primary fw-bold">1. Flujo de Datos (Pipeline)</h5>
+                <p>
+                    El sistema sigue un proceso lineal y robusto:
+                    <ol>
+                        <li><b>Ingesta:</b> Recepción de archivos CSV/Excel mediante Django Forms.</li>
+                        <li><b>Preprocesamiento:</b> Limpieza de valores nulos e imputación estadística con Pandas.</li>
+                        <li><b>Codificación:</b> Transformación de variables categóricas (texto) a numéricas usando <code>LabelEncoder</code>.</li>
+                        <li><b>Normalización:</b> Escalado de datos con <code>StandardScaler</code> para mejorar la convergencia del entrenamiento.</li>
+                    </ol>
+                </p>
+            </section>
+
+            <section class="mb-5">
+                <h5 class="text-primary fw-bold">2. Red Neuronal Backpropagation</h5>
+                <p>
+                    Se utiliza una red <b>Multicapa (MLP)</b> construida con TensorFlow:
+                    <ul>
+                        <li><b>Capas Ocultas:</b> 2 capas de 32 neuronas cada una con función de activación <b>ReLU</b> para manejar la no-linealidad.</li>
+                        <li><b>Capa de Salida:</b> 1 neurona con función <b>Sigmoid</b> para clasificación binaria (0 o 1).</li>
+                        <li><b>Algoritmo:</b> Se utiliza el optimizador <b>Adam</b>, que es una evolución del Descenso de Gradiente Estocástico, para realizar el <b>Backpropagation</b> automático ajustando los pesos y sesgos.</li>
+                    </ul>
+                </p>
+            </section>
+
+            <section class="mb-5">
+                <h5 class="text-primary fw-bold">3. Evaluación de Resultados</h5>
+                <p>
+                    Para validar el modelo, el dataset se divide en 80% entrenamiento y 20% prueba:
+                    <ul>
+                        <li><b>Accuracy:</b> Mide el porcentaje total de predicciones correctas.</li>
+                        <li><b>Matriz de Confusión:</b> Permite visualizar los Falsos Positivos y Falsos Negativos, crucial para entender dónde se equivoca la red.</li>
+                        <li><b>Loss:</b> Indica qué tan lejos está la predicción del valor real durante el entrenamiento.</li>
+                    </ul>
+                </p>
+            </section>
+
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <b>Nota para el examen:</b> Si el profesor pregunta por el "Backpropagation", recuerda mencionar que es el proceso donde se calcula el error en la salida y se propaga hacia atrás para ajustar los pesos usando la derivada de la función de activación.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

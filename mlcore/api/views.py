@@ -1,26 +1,22 @@
 from django.shortcuts import render
-from .forms import TitanicPredictionForm
-from .services import predictor
-
+from .forms import DataForm
+# Create your views here.
 def home(request):
-    """Vista para el formulario de predicción del Titanic"""
     result = None
-    error = None
 
     if request.method == "POST":
-        form = TitanicPredictionForm(request.POST)
+        form = DataForm(request.POST)
 
         if form.is_valid():
             data = form.cleaned_data
-            
-            # Hacer la predicción
-            result = predictor.predict(data)
+
+            # aquí luego conectas tu ML
+            result = data  # temporal
 
     else:
-        form = TitanicPredictionForm()
+        form = DataForm()
 
     return render(request, "form.html", {
         "form": form,
-        "result": result,
-        "error": error
+        "result": result
     })

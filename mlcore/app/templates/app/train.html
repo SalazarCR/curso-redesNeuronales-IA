@@ -1,0 +1,71 @@
+{% extends 'app/base.html' %}
+
+{% block title %}Cargar Dataset y Entrenar{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h5 class="fw-bold mb-4 text-center">
+                <i class="fas fa-upload me-2"></i> Carga de Datos
+            </h5>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <div class="form-text text-muted small">{{ field.help_text }}</div>
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-success btn-lg" id="trainBtn">
+                        <i class="fas fa-play me-2"></i> Iniciar Entrenamiento
+                    </button>
+                </div>
+            </form>
+
+            <div id="loading" class="mt-4 text-center d-none">
+                <div class="spinner-border text-primary mb-2" role="status"></div>
+                <p>Entrenando red neuronal... Por favor espere.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card p-4 bg-light border-0">
+            <h5 class="fw-bold mb-3">Instrucciones Académicas</h5>
+            <ol class="small text-muted">
+                <li>Sube un archivo en formato <b>CSV</b> o <b>Excel (.xlsx)</b>.</li>
+                <li>El sistema detectará automáticamente el target (columna 'survived' o la primera).</li>
+                <li>Se realizará limpieza de datos (imputación de nulos).</li>
+                <li>Se codificarán variables categóricas (LabelEncoding).</li>
+                <li>Se entrenará un modelo con 2 capas ocultas de 32 neuronas cada una.</li>
+                <li>Los resultados se mostrarán en gráficos interactivos.</li>
+            </ol>
+            <div class="alert alert-info py-2 small">
+                <i class="fas fa-lightbulb me-2"></i> <b>Tip:</b> Usa entre 50 y 200 iteraciones para ver mejores resultados en datasets pequeños como el Titanic.
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelector('form').onsubmit = function() {
+        document.getElementById('trainBtn').disabled = true;
+        document.getElementById('loading').classList.remove('d-none');
+    };
+
+    // Estilizar inputs de Django con clases de Bootstrap
+    document.querySelectorAll('input, select').forEach(el => {
+        el.classList.add('form-control');
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends 'app/base.html' %}
+
+{% block title %}Resultados del Entrenamiento{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Métricas Principales -->
+    <div class="col-md-3">
+        <div class="card text-center p-3">
+            <h6 class="text-muted small text-uppercase">Precisión (Accuracy)</h6>
+            <h2 class="fw-bold text-primary">{{ results.accuracy|floatformat:4 }}</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center p-3">
+            <h6 class="text-muted small text-uppercase">Iteraciones (Epochs)</h6>
+            <h2 class="fw-bold text-success">{{ results.epochs_count }}</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center p-3">
+            <h6 class="text-muted small text-uppercase">Filas Procesadas</h6>
+            <h2 class="fw-bold text-info">{{ results.dataset_info.rows }}</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center p-3">
+            <h6 class="text-muted small text-uppercase">Columnas (Features)</h6>
+            <h2 class="fw-bold text-warning">{{ results.dataset_info.cols }}</h2>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <!-- Gráfico de Curva de Aprendizaje -->
+    <div class="col-md-8">
+        <div class="card p-4">
+            <h5 class="fw-bold mb-4">Curva de Entrenamiento (Loss vs Accuracy)</h5>
+            <canvas id="trainingChart" height="150"></canvas>
+        </div>
+    </div>
+    
+    <!-- Matriz de Confusión -->
+    <div class="col-md-4">
+        <div class="card p-4">
+            <h5 class="fw-bold mb-4 text-center">Matriz de Confusión</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered text-center align-middle">
+                    <thead class="bg-light">
+                        <tr>
+                            <th>Real \ Pred</th>
+                            <th>0</th>
+                            <th>1</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th class="bg-light">0</th>
+                            <td class="bg-success text-white fw-bold">{{ results.confusion_matrix.0.0 }}</td>
+                            <td class="bg-danger text-white">{{ results.confusion_matrix.0.1 }}</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-light">1</th>
+                            <td class="bg-danger text-white">{{ results.confusion_matrix.1.0 }}</td>
+                            <td class="bg-success text-white fw-bold">{{ results.confusion_matrix.1.1 }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="small text-muted text-center mt-2">
+                Verdaderos Positivos/Negativos en verde.<br>
+                Errores en rojo.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12 text-center">
+        <a href="{% url 'train' %}" class="btn btn-outline-primary px-4">
+            <i class="fas fa-undo me-2"></i> Entrenar otro dataset
+        </a>
+    </div>
+</div>
+
+<!-- Script para los gráficos -->
+<script>
+    const results = {{ results.json_results|safe }};
+    
+    const ctx = document.getElementById('trainingChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: Array.from({length: results.epochs_count}, (_, i) => i + 1),
+            datasets: [{
+                label: 'Accuracy',
+                data: results.acc_history,
+                borderColor: '#0d6efd',
+                backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                fill: true,
+                tension: 0.3
+            }, {
+                label: 'Loss',
+                data: results.loss_history,
+                borderColor: '#dc3545',
+                backgroundColor: 'transparent',
+                borderDash: [5, 5],
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'top' }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+</script>
+{% endblock %}
